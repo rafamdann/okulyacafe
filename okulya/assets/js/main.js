@@ -465,17 +465,19 @@
     }
     tl.to({}, { duration: 1 }, T(n - 1) + 1); // hold the last frame
 
-    // morning → dusk → night: colour layers fade in, text turns light for the night
-    tl.to(dusk, { opacity: 1, duration: 1 }, T(4))
-      .to(night, { opacity: 1, duration: 1.4 }, T(5))
-      .to(stage, { color: '#FFFEFB', duration: 1 }, T(5))
-      .to(sun, { filter: 'saturate(0) brightness(1.7)', duration: 1 }, T(5));
+    // morning → dusk → night: colour layers fade in, text turns light for the night.
+    // Dusk comes with the second-to-last moment, night with the last.
+    const DUSK = n - 2; const NIGHT = n - 1;
+    tl.to(dusk, { opacity: 1, duration: 1 }, T(DUSK))
+      .to(night, { opacity: 1, duration: 1.4 }, T(NIGHT))
+      .to(stage, { color: '#FFFEFB', duration: 1 }, T(NIGHT))
+      .to(sun, { filter: 'saturate(0) brightness(1.7)', duration: 1 }, T(NIGHT));
 
-    // plates slide in at lunch and at petiscos
-    tl.fromTo(cutA, { x: 220, y: 160, rotation: 120, autoAlpha: 0 }, { x: 0, y: 0, rotation: 0, autoAlpha: 1, duration: 1, ease: 'power2.out' }, T(3) + 0.3)
-      .to(cutA, { x: 260, y: 280, rotation: -90, autoAlpha: 0, duration: 0.9, ease: 'power2.in' }, T(4))
-      .fromTo(cutB, { x: -220, y: 160, rotation: -120, autoAlpha: 0 }, { x: 0, y: 0, rotation: 0, autoAlpha: 1, duration: 1, ease: 'power2.out' }, T(4) + 0.3)
-      .to(cutB, { x: -260, y: 280, rotation: 90, autoAlpha: 0, duration: 0.9, ease: 'power2.in' }, T(5));
+    // plates slide in at lunch and at take away (the two moments before night)
+    tl.fromTo(cutA, { x: 220, y: 160, rotation: 120, autoAlpha: 0 }, { x: 0, y: 0, rotation: 0, autoAlpha: 1, duration: 1, ease: 'power2.out' }, T(NIGHT - 2) + 0.3)
+      .to(cutA, { x: 260, y: 280, rotation: -90, autoAlpha: 0, duration: 0.9, ease: 'power2.in' }, T(NIGHT - 1))
+      .fromTo(cutB, { x: -220, y: 160, rotation: -120, autoAlpha: 0 }, { x: 0, y: 0, rotation: 0, autoAlpha: 1, duration: 1, ease: 'power2.out' }, T(NIGHT - 1) + 0.3)
+      .to(cutB, { x: -260, y: 280, rotation: 90, autoAlpha: 0, duration: 0.9, ease: 'power2.in' }, T(NIGHT));
     if (hint) tl.to(hint, { autoAlpha: 0, duration: 0.4 }, 0.3);
     // the sun crosses the sky over the whole story
     tl.to(sunState, { p: 1, duration: tl.duration(), ease: 'none', onUpdate: () => placeSun(sunState.p) }, 0);

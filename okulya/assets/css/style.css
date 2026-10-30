@@ -430,6 +430,9 @@ html.is-leaving .pt { pointer-events: all; clip-path: circle(150% at var(--x, 50
 }
 .dia__img { position: absolute; inset: 0; overflow: hidden; }
 .dia__img img { width: 100%; height: 100%; object-fit: cover; }
+/* a plate cut-out instead of a photo: sits on a coloured disc, like the menu badges */
+.dia__img--plate { background: var(--c, var(--mel)); }
+.dia__img--plate img { object-fit: contain; padding: 11%; filter: drop-shadow(0 26px 30px rgba(42, 24, 16, .28)); }
 .dia.is-live .dia__img img, .dia.is-live .dia__caption, .dia.is-live .dia__cutout { will-change: transform, opacity; }
 .dia__caption { display: grid; gap: 18px; justify-items: start; }
 .dia__caption p.desc { max-width: 38ch; color: inherit; opacity: .78; }
@@ -494,7 +497,7 @@ html.is-leaving .pt { pointer-events: all; clip-path: circle(150% at var(--x, 50
   opacity: 0; transition: opacity .35s;
 }
 .dia__sun.is-floating.is-on { opacity: 1; }
-/* above every circle (the circles are stacked with z-index 1–7) */
+/* above every circle (the circles are stacked with z-index 1, 2, 3…) */
 .dia.is-live .dia__cutout {
   display: block; position: absolute; z-index: 20; width: min(30vh, 30vw, 300px);
   filter: drop-shadow(0 26px 30px rgba(0, 0, 0, .3));
@@ -819,6 +822,17 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
 .menu-item__dots { flex: 1; border-bottom: 2px dotted rgba(42, 24, 16, .3); translate: 0 -.3em; min-width: 20px; }
 .menu-item__price { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .menu-item__desc { color: var(--cafe-soft); max-width: 52ch; }
+/* monthly menu: one row per weekday, the day beside its dishes (the poster's grid) */
+.menu-day { grid-template-columns: 12rem 1fr; gap: 10px clamp(18px, 3vw, 40px); align-items: baseline; }
+.menu-day .menu-item__name { font-size: clamp(1.25rem, 1.8vw, 1.55rem); white-space: nowrap; }
+/* the "ª" of "1.ª semana" is a tall glyph in the display face; keep it a small raised mark */
+.menu-section__aside .ord { font-size: .62em; vertical-align: .3em; }
+.menu-day__dishes { display: grid; gap: 8px; }
+.menu-day__dishes li { font-size: 1.06rem; line-height: 1.35; }
+.menu-day__dishes li + li { padding-top: 8px; border-top: 1px dashed var(--line); }
+@media (max-width: 600px) {
+  .menu-day { grid-template-columns: 1fr; }
+}
 .menu-note { text-align: center; padding: 28px var(--gutter) 0; color: var(--cafe-soft); font-size: .95rem; }
 
 
@@ -861,6 +875,9 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
 .split__media { position: relative; }
 .split__media .frame { aspect-ratio: 1; border-radius: 50%; overflow: hidden; }
 .split__media .frame img { width: 100%; height: 100%; object-fit: cover; }
+/* a plate cut-out on a coloured disc instead of a photo */
+.split__media .frame--plate { background: var(--mel); display: grid; place-items: center; }
+.split__media .frame--plate img { width: 76%; height: auto; filter: drop-shadow(0 26px 30px rgba(42, 24, 16, .28)); }
 .split__media .sticker { position: absolute; right: 0; bottom: 4%; --size: clamp(120px, 12vw, 160px); }
 .split__copy { display: grid; gap: 22px; justify-items: start; }
 .split__media .sticker { --bg: var(--ambar); }
@@ -909,6 +926,8 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
 .exp-row__media { position: relative; }
 .exp-row__media .shape { aspect-ratio: 4 / 5; overflow: hidden; }
 .exp-row__media .shape img { width: 100%; height: 100%; object-fit: cover; }
+.exp-row__media .shape--plate { background: var(--mel); display: grid; place-items: center; }
+.exp-row__media .shape--plate img { width: 74%; height: auto; filter: drop-shadow(0 26px 30px rgba(42, 24, 16, .28)); }
 .exp-row:nth-child(1) .shape { border-radius: 200px 200px 32px 32px; }
 .exp-row:nth-child(2) .shape { clip-path: var(--scallop); aspect-ratio: 1; }
 .exp-row:nth-child(3) .shape { border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%; aspect-ratio: 1; }

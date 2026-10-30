@@ -24,8 +24,8 @@ The site lives at the path `/okulya`, so every file sits in the `okulya/` folder
 
 | File (in `okulya/`) | URL | Content |
 | --- | --- | --- |
-| `index.html` | `/okulya` | Hero, "um dia no okulya" scroll story, menu teaser, experiences, Instagram, contact |
-| `menu.html` | `/okulya/menu.html` | Full menu (entradas, pratos principais, sobremesas, bebidas) with prices in Kz |
+| `index.html` | `/okulya` | Hero, "um dia no okulya" scroll story (abertura, almoço, para levar, fim do dia), menu teaser with the four weeks, experiences, Instagram, contact |
+| `menu.html` | `/okulya/menu.html` | The monthly menu (menu mensal): four weeks, Monday to Friday, two or three dishes a day, every dish 5.000 Kz, all take away |
 | `sobre.html` | `/okulya/sobre.html` | The story, the name (Umbundu for "to eat"), lunch values |
 | `experiencias.html` | `/okulya/experiencias.html` | Prato do dia, promotions, corporate events, birthdays, weekly event |
 
@@ -46,15 +46,17 @@ vercel.json                   sends / to /okulya
 - **Colours:** whitewash `#FFFEFB`, espresso `#2A1810`, amber `#EE9B22` (from the logo swoosh), honey `#FFD48A`, sky `#A9D8EA` (the café's window frames).
 - **Type:** Caprasimo for display headings, Hanken Grotesk for body text, both from Google Fonts. Text is in sentence case: every heading, button, label and sticker ring starts with a capital. Only the two big "okulya" wordmarks (hero and footer) are lowercase, like the logo.
 - **Hero:** the "o" of "okulya" is a window onto the café wall (`parede-okulya.webp`, a real photo from the okulyacafe2 project). Scrolling pins the hero and opens the "o" until the photo fills the screen and "um dia no okulya" appears on it. This only runs where the hero fits one screen (desktop at least 640px tall, phones at least 740px tall). Elsewhere the "o" is a static photo.
-- **Signature moment:** the pinned porthole on the homepage. As you scroll, photos rise through one circle, the sun arcs across, and the page goes from morning to night.
+- **Signature moment:** the pinned porthole on the homepage. As you scroll, photos rise through one circle, the sun arcs across, and the page goes from morning to night. Dusk and night are tied to the last two moments, so the story still works if a moment is added or removed.
+- **The menu is the client's monthly poster (Menu Mensal), and nothing else.** The café asked for no other food or drink anywhere on the site. When the poster changes, update the four `semana-*` sections in `menu.html`, the dish names in the homepage marquee and the week captions under the badges (`index.html`, `.cats`), which repeat the menu-page subtitles.
 - **Motion respects `prefers-reduced-motion`.** With reduced motion, or without JS, every section renders as a normal static page.
 
 ## Before launch
 
-- [ ] Replace the stock-style photos (`day-*.webp`, `plate-*.webp`, carried over from the previous site) with real photos of Okulya's food and space. Keep the file names, or update the `src` paths.
+- [ ] Replace the stock plate cut-outs (`plate-1/3/4.webp`, carried over from the previous site) with real photos of dishes from the monthly menu. They are decorative (`alt=""`) so they don't name dishes the café doesn't serve. Keep the file names, or update the `src` paths.
 - [ ] The Instagram thumbnails are only 240×427. Ask the client for the originals.
 - [ ] Confirm with the client:
   - that coffee is served from 10h, as the old site said, even though the café opens at 7h
-  - the menu prices
+  - the WhatsApp number: the menu poster shows +244 937 512 044, the site uses +244 933 002 904 everywhere
+  - how the weeks map to dates (is the 1.ª semana always days 1–7 of the month?)
   - what happens at the weekly event
 - [ ] The "aberto agora" status uses Luanda time but cannot know about public holidays. The full hours are always shown next to it.
