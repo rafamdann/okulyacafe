@@ -48,6 +48,7 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 400; 
 p { margin: 0; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
 :focus-visible { outline: 3px solid var(--ambar); outline-offset: 3px; border-radius: 6px; }
+[hidden] { display: none !important; }
 .visually-hidden {
   position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -834,6 +835,130 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
   .menu-day { grid-template-columns: 1fr; }
 }
 .menu-note { text-align: center; padding: 28px var(--gutter) 0; color: var(--cafe-soft); font-size: .95rem; }
+
+/* ---------- dates on the monthly menu (all added by main.js) ---------- */
+/* "Esta semana" / "Hoje": a dark pill with a pulsing amber dot */
+.now-tag {
+  display: inline-flex; align-items: center; gap: .5em; justify-self: start;
+  padding: .45em .9em; border-radius: 999px; background: var(--cafe); color: var(--cal);
+  font: 600 .78rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+}
+.now-tag::before {
+  content: ""; width: .6em; height: .6em; border-radius: 50%; background: var(--ambar); flex: none;
+  animation: ping-ambar 2.2s infinite;
+}
+@keyframes ping-ambar { 0% { box-shadow: 0 0 0 0 rgba(238, 155, 34, .6); } 70%, 100% { box-shadow: 0 0 0 .6em rgba(238, 155, 34, 0); } }
+
+.menu-nav small { font-size: .8em; font-weight: 400; opacity: .6; margin-left: .2em; }
+.menu-nav a.is-now { position: relative; }
+.menu-nav a.is-now::after {
+  content: ""; position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--ambar); box-shadow: 0 0 0 2px var(--cal);
+}
+.menu-week__dates { font-family: var(--font-display); font-size: clamp(1.2rem, 1.6vw, 1.45rem); color: var(--ambar); line-height: 1.1; }
+.menu-section.is-now .menu-section__aside .now-tag { margin-bottom: 4px; }
+@media (max-width: 860px) { .menu-section__aside .now-tag { justify-self: center; } }
+
+.menu-day__date { display: block; margin-top: .35em; font: 400 .9rem/1.2 var(--font-body); color: var(--cafe-soft); letter-spacing: 0; }
+.menu-day__date b { font-weight: 600; color: var(--cafe); }
+.menu-day { scroll-margin-top: 170px; transition: background-color .6s; }
+.menu-day.is-past > * { opacity: .45; }
+.menu-day.is-today {
+  padding: 22px clamp(16px, 2vw, 24px); margin-inline: calc(-1 * clamp(16px, 2vw, 24px));
+  border-radius: 24px; border-bottom-color: transparent; background: var(--mel);
+}
+.menu-day.is-today .menu-day__dishes li + li { border-top-color: rgba(42, 24, 16, .2); }
+.menu-day.is-flash { animation: day-flash 1.8s var(--ease); }
+@keyframes day-flash { 0%, 30% { box-shadow: 0 0 0 4px var(--ambar); } 100% { box-shadow: 0 0 0 4px rgba(238, 155, 34, 0); } }
+.menu-day:not(.is-today).is-flash { border-radius: 16px; }
+
+/* home: the dates under each week badge */
+.cat__dates { font-size: .85rem; font-weight: 600; padding: .35em .85em; border-radius: 999px; background: rgba(255, 254, 251, .55); margin-top: -4px; }
+.cat .now-tag { position: absolute; top: 2%; left: 50%; translate: -50% 0; rotate: -5deg; box-shadow: 0 0 0 3px var(--ambar); }
+.cat.is-now .cat__dates { background: var(--cafe); color: var(--cal); }
+.menu-band__cta { flex-wrap: wrap; gap: 12px; }
+
+/* ---------- menu page: today's card and the month calendar ---------- */
+.today { padding-block: 0 clamp(48px, 7vw, 96px); }
+.today__grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(20px, 3vw, 40px); align-items: stretch; }
+.today__card {
+  position: relative; display: grid; align-content: start; gap: 18px;
+  padding: clamp(28px, 4vw, 56px); border-radius: 40px; background: var(--mel);
+}
+.today__eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding-right: 120px; }
+.today__eyebrow .status { font-weight: 600; text-transform: uppercase; letter-spacing: .06em; font-size: .82rem; }
+.today__week { font-size: .95rem; color: var(--cafe-soft); }
+.today__week .ord { font-size: .85em; }
+.today__card h2 { padding-right: 110px; }
+.today__price { position: absolute; top: clamp(-28px, -2vw, -14px); right: clamp(14px, 3vw, 40px); --size: clamp(104px, 10vw, 132px); --bg: var(--cafe); --fg: var(--mel); rotate: 8deg; }
+.today__price .sticker__core { font-size: clamp(1.3rem, 1.6vw, 1.6rem); }
+.today__price .sticker__core small { display: block; font-family: var(--font-body); font-size: .45em; font-weight: 500; margin-top: .3em; }
+.today__dishes { display: grid; gap: 10px; margin-top: 8px; }
+.today__dishes li {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+  padding: 14px 14px 14px 14px; border-radius: 22px; background: rgba(255, 254, 251, .72);
+}
+.today__n {
+  display: grid; place-items: center; width: 46px; aspect-ratio: 1; border-radius: 50%;
+  background: var(--ambar); font-family: var(--font-display); font-size: 1.35rem; line-height: 1;
+}
+.today__dish { font-size: clamp(1.05rem, 1.4vw, 1.2rem); font-weight: 500; line-height: 1.3; }
+.today__order {
+  padding: .6em 1.1em; border-radius: 999px; background: var(--cafe); color: var(--cal);
+  font-weight: 600; font-size: .9rem; text-decoration: none; white-space: nowrap;
+  transition: transform .35s var(--ease-back);
+}
+.today__order:hover { transform: scale(1.06); }
+.today__note { font-size: .95rem; color: var(--cafe-soft); }
+
+.cal {
+  display: grid; align-content: space-between; gap: 18px;
+  padding: clamp(24px, 3.5vw, 44px); border-radius: 40px; box-shadow: inset 0 0 0 1.5px var(--line);
+}
+.cal__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+.cal__table { width: 100%; border-collapse: separate; border-spacing: 0 6px; table-layout: fixed; }
+.cal__table thead th { font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--cafe-soft); padding-bottom: 2px; }
+.cal__table thead td, .cal__table tbody th { width: 3.2em; }
+.cal__table td, .cal__table th { text-align: center; padding: 4px 2px; }
+.cal__table tbody th a {
+  font-family: var(--font-display); font-weight: 400; font-size: 1rem; text-decoration: none; color: var(--cafe-soft);
+}
+.cal__table tbody th .ord { font-size: .7em; vertical-align: .35em; }
+.cal__table tr.is-now td, .cal__table tr.is-now th { background: #FFF1D6; }
+.cal__table tr.is-now th { border-radius: 999px 0 0 999px; }
+.cal__table tr.is-now td:last-child { border-radius: 0 999px 999px 0; }
+.cal__table tr.is-now th a { color: var(--cafe); }
+.cal__day {
+  display: grid; place-items: center; width: min(100%, 48px); aspect-ratio: 1; margin-inline: auto; border-radius: 50%;
+  font-family: var(--font-display); font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1; text-decoration: none;
+  transition: transform .35s var(--ease-back), background-color .25s;
+}
+.cal__day:hover { transform: scale(1.12); background: var(--mel); }
+.cal__day.is-past { color: rgba(42, 24, 16, .3); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.cal__day.is-today { background: var(--ambar); color: var(--cafe); animation: ping-ambar 2.2s infinite; }
+.cal__key { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: .85rem; color: var(--cafe-soft); }
+.cal__key li { display: inline-flex; align-items: center; gap: .5em; }
+.cal__dot { width: .8em; height: .8em; border-radius: 50%; }
+.cal__dot--today { background: var(--ambar); }
+.cal__dot--week { background: #FFE2AE; }
+.cal__dot--past { box-shadow: inset 0 0 0 1.5px rgba(42, 24, 16, .3); }
+
+@media (max-width: 960px) {
+  .today__grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .today__card, .cal { border-radius: 28px; }
+  .today__eyebrow, .today__card h2 { padding-right: 84px; }
+  .today__price { --size: 92px; top: -20px; right: 12px; }
+  .today__price .sticker__core { font-size: 1.15rem; }
+  .today__dishes li { gap: 12px; padding: 12px; border-radius: 18px; }
+  .today__n { width: 36px; font-size: 1.05rem; }
+  .today__dish { font-size: 1rem; }
+  .today__order { padding: .55em .9em; font-size: .85rem; }
+}
+@media (max-width: 600px) {
+  .menu-day.is-today { padding: 18px 12px; margin-inline: -8px; border-radius: 20px; }
+}
 
 
 .prato-band { background: var(--ambar); padding-block: clamp(60px, 8vw, 100px); }

@@ -48,6 +48,7 @@ vercel.json                   sends / to /okulya
 - **Hero:** the "o" of "okulya" is a window onto the café wall (`parede-okulya.webp`, a real photo from the okulyacafe2 project). Scrolling pins the hero and opens the "o" until the photo fills the screen and "um dia no okulya" appears on it. This only runs where the hero fits one screen (desktop at least 640px tall, phones at least 740px tall). Elsewhere the "o" is a static photo.
 - **Signature moment:** the pinned porthole on the homepage. As you scroll, photos rise through one circle, the sun arcs across, and the page goes from morning to night. Dusk and night are tied to the last two moments, so the story still works if a moment is added or removed.
 - **The menu is the client's monthly poster (Menu Mensal), and nothing else.** The café asked for no other food or drink anywhere on the site. When the poster changes, update the four `semana-*` sections in `menu.html`, the dish names in the homepage marquee and the week captions under the badges (`index.html`, `.cats`), which repeat the menu-page subtitles.
+- **The menu knows the date.** `MENU_START` at the top of the `menuCalendar` block in `assets/js/main.js` is the Monday of the 1.ª semana (now `2026-11-02`, set from the client). From it the script, on Luanda time, puts dates on the week bar, the week headings, every day row and the homepage badges, marks the current week and today, and fills the "Hoje no menu" card and month calendar at the top of `menu.html` with the dishes read from the weeks below. On Saturday and Sunday it shows Monday's menu. After the fourth week it starts over at the 1.ª semana, so when the client sends a new month, update the dishes and set `MENU_START` to its first Monday. Without JS the dates are left out and the weeks read as before.
 - **Motion respects `prefers-reduced-motion`.** With reduced motion, or without JS, every section renders as a normal static page.
 
 ## Before launch
@@ -57,6 +58,6 @@ vercel.json                   sends / to /okulya
 - [ ] Confirm with the client:
   - that coffee is served from 10h, as the old site said, even though the café opens at 7h
   - the WhatsApp number: the menu poster shows +244 937 512 044, the site uses +244 933 002 904 everywhere
-  - how the weeks map to dates (is the 1.ª semana always days 1–7 of the month?)
+  - what the menu does after the 4.ª semana (the site repeats the four weeks until `MENU_START` changes) and on public holidays, which the calendar can't know about
   - what happens at the weekly event
 - [ ] The "aberto agora" status uses Luanda time but cannot know about public holidays. The full hours are always shown next to it.

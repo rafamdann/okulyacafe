@@ -63,6 +63,34 @@
       <p class="lede" data-hero-item>Sabor que acolhe, qualidade que se sente. Quatro semanas de refeições caseiras, com pratos novos todos os dias de segunda a sexta, a 5.000 Kz cada.</p>
     </section>
 
+    <!-- filled by main.js from the weeks below; stays hidden without JavaScript -->
+    <section class="today" id="hoje" aria-labelledby="today-title" hidden>
+      <div class="wrap today__grid">
+        <div class="today__card">
+          <div class="sticker today__price" aria-hidden="true">
+            <svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-today" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-today" textLength="248">Menu do dia • Take away •</textPath></text></svg>
+            <span class="sticker__core">5.000<small>Kwanzas</small></span>
+          </div>
+          <p class="today__eyebrow"><span class="status is-open" data-today-label>Hoje no menu</span><span class="today__week" data-today-week></span></p>
+          <h2 class="display-m" id="today-title" data-today-date></h2>
+          <ol class="today__dishes" data-today-dishes></ol>
+          <p class="today__note" data-today-note>Cada prato custa 5.000 Kz e também pode ir para levar.</p>
+        </div>
+        <div class="cal">
+          <div class="cal__head">
+            <h2 class="display-s" data-cal-title>O mês</h2>
+            <p class="muted" data-cal-sub></p>
+          </div>
+          <table class="cal__table" data-cal></table>
+          <ul class="cal__key" aria-hidden="true">
+            <li><i class="cal__dot cal__dot--today"></i>Hoje</li>
+            <li><i class="cal__dot cal__dot--week"></i>Esta semana</li>
+            <li><i class="cal__dot cal__dot--past"></i>Já servido</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <nav class="menu-nav" aria-label="Semanas do menu">
       <ul>
         <li><a href="#semana-1">1.ª semana</a></li>

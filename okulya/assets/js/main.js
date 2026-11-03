@@ -48,6 +48,136 @@
     els.forEach((el) => { el.textContent = text; el.classList.toggle('is-open', open); });
   })();
 
+  /* ---------- monthly menu: which week and day it is ---------- */
+  // The poster has four weeks, Monday to Friday, and the dishes are read from the
+  // menu page itself. MENU_START is the Monday of the 1.ª semana: when the café
+  // sends a new month, set it to that month's first Monday. Past the fourth week the
+  // cycle repeats, so "hoje" never points at a week that has ended.
+  (function menuCalendar() {
+    const MENU_START = '2026-11-02';
+    const MONTHS = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+    const DAYS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+    const KEYS = ['seg', 'ter', 'qua', 'qui', 'sex'];
+    const WA = 'https://wa.me/244933002904?text=';
+    const DAY = 864e5;
+
+    let parts;
+    try {
+      parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Luanda', year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(new Date());
+    } catch (e) { return; }
+    const num = (t) => Number((parts.find((p) => p.type === t) || {}).value);
+    const today = Date.UTC(num('year'), num('month') - 1, num('day'));
+    const [sy, sm, sd] = MENU_START.split('-').map(Number);
+    const start = Date.UTC(sy, sm - 1, sd);
+    const weekday = (t) => (new Date(t).getUTCDay() + 6) % 7; // 0 = Monday
+
+    // on Saturday and Sunday the page looks ahead to Monday
+    const weekend = weekday(today) > 4;
+    const focus = weekend ? today + (7 - weekday(today)) * DAY : today;
+    const offset = Math.round((focus - start) / DAY);
+    const cycleStart = start + Math.floor(offset / 28) * 28 * DAY;
+    const week = Math.floor((offset - Math.floor(offset / 28) * 28) / 7); // 0 to 3
+    const day = weekday(focus);
+
+    const dateOf = (w, d) => new Date(cycleStart + (w * 7 + d) * DAY);
+    const long = (dt) => `${dt.getUTCDate()} de ${MONTHS[dt.getUTCMonth()]}`;
+    const short = (dt) => `${dt.getUTCDate()} ${MONTHS[dt.getUTCMonth()].slice(0, 3)}`;
+    const range = (w, isLong) => {
+      const a = dateOf(w, 0); const b = dateOf(w, 4);
+      if (a.getUTCMonth() !== b.getUTCMonth()) return isLong ? `${long(a)} a ${long(b)}` : `${short(a)}–${short(b)}`;
+      return isLong ? `${a.getUTCDate()} a ${long(b)}` : `${a.getUTCDate()}–${short(b)}`;
+    };
+    const stateOf = (w, d) => {
+      const t = dateOf(w, d).getTime();
+      return t < today ? 'past' : t === today ? 'today' : 'future';
+    };
+    const nowLabel = weekend ? 'A seguir' : 'Esta semana';
+    const tag = (text) => `<span class="now-tag">${text}</span>`;
+    const ord = (w) => `${w + 1}.<span class="ord">ª</span>`;
+
+    // home: dates under each week, and a tag on the current one
+    $$('.cat[href*="#semana-"]').forEach((a) => {
+      const w = Number(a.getAttribute('href').split('#semana-')[1]) - 1;
+      if (!(w >= 0 && w < 4)) return;
+      a.insertAdjacentHTML('beforeend', `<span class="cat__dates">${range(w, true)}</span>`);
+      if (w === week) { a.classList.add('is-now'); $('.cat__badge', a).insertAdjacentHTML('beforeend', tag(nowLabel)); }
+    });
+    $$('[data-menu-today]').forEach((el) => { el.hidden = false; });
+
+    // menu page: week bar, week headings and every day row
+    $$('.menu-nav a[href^="#semana-"]').forEach((a) => {
+      const w = Number(a.getAttribute('href').slice(8)) - 1;
+      a.insertAdjacentHTML('beforeend', ` <small>${range(w)}</small>`);
+      if (w === week) a.classList.add('is-now');
+    });
+    for (let w = 0; w < 4; w++) {
+      const sec = document.getElementById(`semana-${w + 1}`);
+      if (!sec) continue;
+      const h = $('.menu-section__aside h2', sec);
+      if (h) h.insertAdjacentHTML('afterend', `<p class="menu-week__dates">${range(w, true)}</p>`);
+      if (w === week && h) { sec.classList.add('is-now'); h.insertAdjacentHTML('beforebegin', tag(nowLabel)); }
+      $$('.menu-day', sec).forEach((row, d) => {
+        const st = stateOf(w, d);
+        row.id = `s${w + 1}-${KEYS[d]}`;
+        if (st !== 'future') row.classList.add(`is-${st}`);
+        const name = $('.menu-item__name', row);
+        if (name) name.insertAdjacentHTML('beforeend', `<span class="menu-day__date">${st === 'today' ? '<b>Hoje</b> · ' : ''}${long(dateOf(w, d))}</span>`);
+      });
+    }
+
+    // menu page: today's card
+    const todayBox = document.getElementById('hoje');
+    if (todayBox) {
+      const row = document.getElementById(`s${week + 1}-${KEYS[day]}`);
+      const dishes = row ? $$('.menu-day__dishes li', row).map((li) => li.textContent.trim()) : [];
+      if (dishes.length) {
+        const when = weekend ? `${DAYS[day].toLowerCase()}-feira, ${long(dateOf(week, day))}` : 'hoje';
+        $('[data-today-label]', todayBox).textContent = weekend ? 'Próximo menu' : 'Hoje no menu';
+        $('[data-today-week]', todayBox).innerHTML = `${ord(week)} semana`;
+        $('[data-today-date]', todayBox).textContent = `${DAYS[day]}, ${long(dateOf(week, day))}`;
+        $('[data-today-dishes]', todayBox).innerHTML = dishes.map((dish, i) => `
+          <li>
+            <span class="today__n" aria-hidden="true">${i + 1}</span>
+            <span class="today__dish">${dish}</span>
+            <a class="today__order" href="${WA}${encodeURIComponent(`Olá! Gostaria de encomendar ${dish} para ${when}.`)}" target="_blank" rel="noopener" aria-label="Encomendar ${dish} pelo WhatsApp">Pedir</a>
+          </li>`).join('');
+        const weekKey = $('.cal__dot--week', todayBox);
+        if (weekKey) weekKey.parentNode.lastChild.textContent = nowLabel;
+        if (weekend) $('[data-today-note]', todayBox).textContent = 'O menu mensal é servido de segunda a sexta. Cada prato custa 5.000 Kz e também pode ir para levar.';
+
+        // the month at a glance: four weeks, Monday to Friday
+        const first = dateOf(0, 0); const last = dateOf(3, 4);
+        const m1 = MONTHS[first.getUTCMonth()]; const m2 = MONTHS[last.getUTCMonth()];
+        const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+        $('[data-cal-title]', todayBox).textContent = m1 === m2 ? cap(m1) : `${cap(m1)} e ${m2}`;
+        $('[data-cal-sub]', todayBox).textContent = m1 === m2 ? `${first.getUTCDate()} a ${long(last)}` : `${long(first)} a ${long(last)}`;
+        let rows = '';
+        for (let w = 0; w < 4; w++) {
+          rows += `<tr${w === week ? ' class="is-now"' : ''}><th scope="row"><a href="#semana-${w + 1}" aria-label="${w + 1}.ª semana">${ord(w)}</a></th>`;
+          for (let d = 0; d < 5; d++) {
+            const st = stateOf(w, d); const dt = dateOf(w, d);
+            const label = `${DAYS[d]}, ${long(dt)}${st === 'today' ? ', hoje' : st === 'past' ? ', já servido' : ''}`;
+            rows += `<td><a class="cal__day is-${st}" href="#s${w + 1}-${KEYS[d]}" aria-label="${label}"${st === 'today' ? ' aria-current="date"' : ''}>${dt.getUTCDate()}</a></td>`;
+          }
+          rows += '</tr>';
+        }
+        $('[data-cal]', todayBox).innerHTML = `<caption class="visually-hidden">Calendário do menu mensal</caption>
+          <thead><tr><td></td>${DAYS.map((n) => `<th scope="col" abbr="${n}">${n.slice(0, 3)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody>`;
+        todayBox.hidden = false;
+      }
+    }
+
+    // a day picked on the calendar lights up when the page arrives at it
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('.cal__day');
+      const row = a && document.getElementById(a.getAttribute('href').slice(1));
+      if (!row) return;
+      row.classList.remove('is-flash');
+      void row.offsetWidth;
+      row.classList.add('is-flash');
+    });
+  })();
+
   /* ---------- scrolling ---------- */
   // Native scrolling only. A JS smooth-scroll (Lenis) moved the page from the main
   // thread every frame, so any busy frame made the whole page, sticky headings
@@ -568,6 +698,14 @@
     const img = $('.menu-section__aside img', sec);
     if (img) gsap.fromTo(img, { rotation: -40 }, { rotation: 30, ease: 'none', scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: true } });
   });
+
+  // menu page: today's dishes slide in, the calendar days pop one after another
+  const todayBox = $('.today:not([hidden])');
+  if (todayBox) {
+    const st = { trigger: todayBox, start: 'top 80%' };
+    gsap.from($$('.today__dishes li', todayBox), { x: -24, autoAlpha: 0, duration: 0.9, stagger: 0.12, ease: 'expo.out', scrollTrigger: st });
+    gsap.from($$('.cal__day', todayBox), { scale: 0.4, autoAlpha: 0, duration: 0.6, stagger: 0.025, ease: 'back.out(2)', scrollTrigger: st });
+  }
 
   // experiences page: media shapes ease in with a slight turn
   $$('.exp-row__media .shape').forEach((s) => {
