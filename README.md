@@ -56,7 +56,10 @@ vercel.json                   sends / to /okulya
 - [ ] Replace the stock plate cut-outs (`plate-1/3/4.webp`, carried over from the previous site) with real photos of dishes from the monthly menu. They are decorative (`alt=""`) so they don't name dishes the café doesn't serve. Keep the file names, or update the `src` paths.
 - [ ] The Instagram thumbnails are only 240×427. Ask the client for the originals.
 - [ ] Confirm with the client:
-  - that coffee is served from 10h, as the old site said, even though the café opens at 7h
+  - that coffee is served from 10h, as the old site said, even though the café opens at 7h. The client's list is called "Bebidas de pequeno-almoço", which suggests coffee from opening time
+  - breakfast: the hours it is served, and whether it can also be take away (the site doesn't say either)
+  - "Café pingado" (1.000 Kz) and "Pingado" (2.300 Kz) are both on the drinks list. Are they different drinks, or is one a typo?
+  - "Meia de leite" is 600 Kz, less than "Leite simples" (700 Kz). Is that price right?
   - the WhatsApp number: the menu poster shows +244 937 512 044, the site uses +244 933 002 904 everywhere
   - what the menu does after the 4.ª semana (the site repeats the four weeks until `MENU_START` changes) and on public holidays, which the calendar can't know about
   - what happens at the weekly event

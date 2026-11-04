@@ -691,7 +691,9 @@
 
   // menu: staggered items per category (Soquendo's 180ms cadence)
   $$('.menu-section').forEach((sec) => {
-    gsap.from($$('.menu-item', sec), {
+    // price lists rise group by group, the week days row by row
+    const groups = $$('.menu-group', sec);
+    gsap.from(groups.length ? groups : $$('.menu-item', sec), {
       y: 34, autoAlpha: 0, duration: 0.9, ease: 'expo.out', stagger: 0.12,
       scrollTrigger: { trigger: sec, start: 'top 70%' },
     });
