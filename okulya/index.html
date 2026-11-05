@@ -26,11 +26,12 @@
 
   <header class="site-header">
     <a class="brand" href="/okulya" aria-label="Okulya Café, página inicial">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ring-brand" d="M50,50 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs><text><textPath href="#ring-brand" textLength="268">Okulya Café • Talatona • Luanda •</textPath></text></svg>
+      <span class="spin" aria-hidden="true"><svg viewBox="0 0 100 100"><defs><path id="ring-brand" d="M50,50 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs><text><textPath href="#ring-brand" textLength="268">Okulya Café • Talatona • Luanda •</textPath></text></svg></span>
       <img src="/okulya/assets/img/logo.webp" alt="" width="56" height="56">
     </a>
     <nav class="nav" aria-label="Principal">
       <a href="/okulya/menu.html">Menu</a>
+      <a href="/okulya/pequeno-almoco.html">Pequeno-almoço</a>
       <a href="/okulya/sobre.html">Sobre</a>
       <a href="/okulya/experiencias.html">Experiências</a>
       <a href="#contacto">Contacto</a>
@@ -43,6 +44,7 @@
     <div class="mobile-menu__blob" aria-hidden="true"></div>
     <ul>
       <li><a class="mm-link" href="/okulya/menu.html">Menu</a></li>
+      <li><a class="mm-link" href="/okulya/pequeno-almoco.html">Pequeno-almoço</a></li>
       <li><a class="mm-link" href="/okulya/sobre.html">Sobre</a></li>
       <li><a class="mm-link" href="/okulya/experiencias.html">Experiências</a></li>
       <li><a class="mm-link" href="#contacto">Contacto</a></li>
@@ -74,7 +76,7 @@
           <img class="hero__plate" src="/okulya/assets/img/plate-4.webp" alt="" width="800" height="761" loading="lazy">
         </div>
         <div class="sticker hero__sticker" aria-hidden="true">
-          <svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-hero" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-hero" textLength="248">Comida caseira • Almoço • Take away •</textPath></text></svg>
+          <span class="spin" aria-hidden="true"><svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-hero" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-hero" textLength="248">Comida caseira • Almoço • Take away •</textPath></text></svg></span>
           <span class="sticker__core">Desde<br>2022</span>
         </div>
         <div class="hero__dots" role="group" aria-label="Pratos em destaque">
@@ -231,8 +233,29 @@
         <div class="menu-band__cta">
           <a class="btn btn--light" href="/okulya/menu.html#hoje" data-menu-today hidden>Ver o menu de hoje</a>
           <a class="btn" href="/okulya/menu.html">Ver o menu completo</a>
-          <a class="btn btn--light" href="/okulya/menu.html#pequeno-almoco">Pequeno-almoço e bebidas</a>
         </div>
+      </div>
+    </section>
+
+    <!-- ============ BREAKFAST ============ -->
+    <section class="bf-band" id="pequeno-almoco" aria-labelledby="bf-title">
+      <div class="wrap bf-band__grid">
+        <div class="bf-band__lead">
+          <h2 class="display-l" id="bf-title" data-rise><span class="line-mask"><span>Pequeno-almoço</span></span></h2>
+          <p class="lede">Baguetes, croissants, tostas, pão de leite, ovos e prego, com um café, um leite ou um chá.</p>
+          <a class="btn" href="/okulya/pequeno-almoco.html">Ver o pequeno-almoço</a>
+        </div>
+        <ul class="bf-band__chips" aria-label="Categorias do pequeno-almoço">
+          <li><a href="/okulya/pequeno-almoco.html#baguetes">Baguetes</a></li>
+          <li><a href="/okulya/pequeno-almoco.html#croissants">Croissants</a></li>
+          <li><a href="/okulya/pequeno-almoco.html#tostas">Tostas</a></li>
+          <li><a href="/okulya/pequeno-almoco.html#pao-de-leite">Pão de leite</a></li>
+          <li><a href="/okulya/pequeno-almoco.html#ovos">Ovos e omeletes</a></li>
+          <li><a href="/okulya/pequeno-almoco.html#prego">Prego</a></li>
+          <li><a class="is-drink" href="/okulya/pequeno-almoco.html#cafes">Cafés</a></li>
+          <li><a class="is-drink" href="/okulya/pequeno-almoco.html#leites">Leites</a></li>
+          <li><a class="is-drink" href="/okulya/pequeno-almoco.html#chas">Chás</a></li>
+        </ul>
       </div>
     </section>
 
@@ -248,7 +271,7 @@
           <div class="prato__visual">
             <img src="/okulya/assets/img/plate-4.webp" alt="" width="800" height="761" loading="lazy">
             <div class="sticker prato__price" data-pop>
-              <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ring-prato" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-prato" textLength="248">Prato do dia • Segunda a sexta •</textPath></text></svg>
+              <span class="spin" aria-hidden="true"><svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-prato" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-prato" textLength="248">Prato do dia • Segunda a sexta •</textPath></text></svg></span>
               <span class="sticker__core">5.000<small>Kwanzas</small></span>
             </div>
           </div>
@@ -413,14 +436,14 @@
       <div class="footer__legal">
         <span>© <span data-year>2026</span> Okulya Café, Talatona, Luanda</span>
         <a class="footer__credit" href="https://innoweb.agency" target="_blank" rel="noopener">Made by Innoweb Agency Solutions</a>
-        <span class="footer__links"><a href="/okulya/menu.html">Menu</a><a href="/okulya/sobre.html">Sobre</a><a href="/okulya/experiencias.html">Experiências</a></span>
+        <span class="footer__links"><a href="/okulya/menu.html">Menu</a><a href="/okulya/pequeno-almoco.html">Pequeno-almoço</a><a href="/okulya/sobre.html">Sobre</a><a href="/okulya/experiencias.html">Experiências</a></span>
       </div>
     </div>
     <p class="footer__word" aria-hidden="true">okulya</p>
   </footer>
 
   <a class="sticker wa" href="https://wa.me/244933002904?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20o%20Okulya%20Caf%C3%A9." target="_blank" rel="noopener" aria-label="Fala connosco no WhatsApp">
-    <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ring-wa" d="M50,50 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs><text><textPath href="#ring-wa" textLength="240">Fala connosco • WhatsApp •</textPath></text></svg>
+    <span class="spin" aria-hidden="true"><svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-wa" d="M50,50 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs><text><textPath href="#ring-wa" textLength="240">Fala connosco • WhatsApp •</textPath></text></svg></span>
     <svg class="wa__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
   </a>
 

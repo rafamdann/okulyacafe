@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Menu mensal do Okulya Café em Talatona</title>
-  <meta name="description" content="O menu do Okulya Café: refeições caseiras de segunda a sexta, a 5.000 Kz o prato, para comer cá ou levar, e pequeno-almoço com cafés, leites e chás.">
+  <meta name="description" content="O menu mensal do Okulya Café: refeições caseiras de segunda a sexta, a 5.000 Kz o prato, para comer cá ou levar. O pequeno-almoço tem página própria.">
   <meta name="theme-color" content="#EE9B22">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Menu mensal do Okulya Café em Talatona">
-  <meta property="og:description" content="O menu do Okulya Café: refeições caseiras de segunda a sexta, a 5.000 Kz o prato, para comer cá ou levar, e pequeno-almoço com cafés, leites e chás.">
+  <meta property="og:description" content="O menu mensal do Okulya Café: refeições caseiras de segunda a sexta, a 5.000 Kz o prato, para comer cá ou levar. O pequeno-almoço tem página própria.">
   <meta property="og:image" content="https://innoweb.agency/okulya/assets/img/logo.webp">
   <link rel="icon" type="image/png" href="/okulya/favicon.png">
   <link rel="apple-touch-icon" href="/okulya/apple-touch-icon.png">
@@ -25,11 +25,12 @@
 
   <header class="site-header">
     <a class="brand" href="/okulya" aria-label="Okulya Café, página inicial">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ring-brand" d="M50,50 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs><text><textPath href="#ring-brand" textLength="268">Okulya Café • Talatona • Luanda •</textPath></text></svg>
+      <span class="spin" aria-hidden="true"><svg viewBox="0 0 100 100"><defs><path id="ring-brand" d="M50,50 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs><text><textPath href="#ring-brand" textLength="268">Okulya Café • Talatona • Luanda •</textPath></text></svg></span>
       <img src="/okulya/assets/img/logo.webp" alt="" width="56" height="56">
     </a>
     <nav class="nav" aria-label="Principal">
       <a href="/okulya/menu.html" aria-current="page">Menu</a>
+      <a href="/okulya/pequeno-almoco.html">Pequeno-almoço</a>
       <a href="/okulya/sobre.html">Sobre</a>
       <a href="/okulya/experiencias.html">Experiências</a>
       <a href="#contacto">Contacto</a>
@@ -42,6 +43,7 @@
     <div class="mobile-menu__blob" aria-hidden="true"></div>
     <ul>
       <li><a class="mm-link" href="/okulya/menu.html" aria-current="page">Menu</a></li>
+      <li><a class="mm-link" href="/okulya/pequeno-almoco.html">Pequeno-almoço</a></li>
       <li><a class="mm-link" href="/okulya/sobre.html">Sobre</a></li>
       <li><a class="mm-link" href="/okulya/experiencias.html">Experiências</a></li>
       <li><a class="mm-link" href="#contacto">Contacto</a></li>
@@ -60,7 +62,11 @@
       <img class="page-hero__plate" src="/okulya/assets/img/plate-3.webp" alt="" width="800" height="735" style="right: 5%; top: 30%;">
       <img class="page-hero__plate" src="/okulya/assets/img/plate-4.webp" alt="" width="800" height="761" style="left: 20%; bottom: -4%; width: clamp(90px, 10vw, 150px);">
       <h1 class="display-xl display-xl--long" id="page-title" data-rise><span class="line-mask"><span>Menu mensal</span></span></h1>
-      <p class="lede" data-hero-item>Sabor que acolhe, qualidade que se sente. Quatro semanas de refeições caseiras, com pratos novos todos os dias de segunda a sexta, a 5.000 Kz cada. E, para começar o dia, pequeno-almoço, cafés, leites e chás.</p>
+      <p class="lede" data-hero-item>Sabor que acolhe, qualidade que se sente. Quatro semanas de refeições caseiras, com pratos novos todos os dias de segunda a sexta, a 5.000 Kz cada.</p>
+      <nav class="menu-switch" aria-label="Menus" data-hero-item>
+        <a href="/okulya/menu.html" aria-current="page"><b>Almoço</b><small>Menu mensal, seg. a sex.</small></a>
+        <a href="/okulya/pequeno-almoco.html"><b>Pequeno-almoço</b><small>Comer e beber</small></a>
+      </nav>
     </section>
 
     <!-- filled by main.js from the weeks below; stays hidden without JavaScript -->
@@ -68,7 +74,7 @@
       <div class="wrap today__grid">
         <div class="today__card">
           <div class="sticker today__price" aria-hidden="true">
-            <svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-today" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-today" textLength="248">Menu do dia • Take away •</textPath></text></svg>
+            <span class="spin" aria-hidden="true"><svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-today" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-today" textLength="248">Menu do dia • Take away •</textPath></text></svg></span>
             <span class="sticker__core">5.000<small>Kwanzas</small></span>
           </div>
           <p class="today__eyebrow"><span class="status is-open" data-today-label>Hoje no menu</span><span class="today__week" data-today-week></span></p>
@@ -97,8 +103,6 @@
         <li><a href="#semana-2">2.ª semana</a></li>
         <li><a href="#semana-3">3.ª semana</a></li>
         <li><a href="#semana-4">4.ª semana</a></li>
-        <li><a href="#pequeno-almoco">Pequeno-almoço</a></li>
-        <li><a href="#bebidas">Bebidas</a></li>
       </ul>
     </nav>
 
@@ -171,114 +175,11 @@
       <p class="menu-note">Todos os pratos custam 5.000 Kz e também são take away. Se tiveres alguma alergia ou restrição alimentar, diz-nos antes de pedir.</p>
     </section>
 
-    <section class="menu-section" id="pequeno-almoco" aria-labelledby="t-pequeno-almoco">
-      <div class="wrap menu-section__grid">
-        <div class="menu-section__aside">
-          <h2 class="display-l" id="t-pequeno-almoco">Pequeno-almoço</h2>
-          <p class="muted">Baguetes, croissants, tostas e ovos</p>
-          <img src="/okulya/assets/img/plate-3.webp" alt="" width="800" height="735" loading="lazy">
-        </div>
-        <div class="menu-groups">
-          <div class="menu-group">
-            <h3 class="menu-group__title">Baguetes</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Baguete de atum</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">3.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Baguete de peito de frango</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">4.500 Kz</span></div></li>
-            </ul>
-          </div>
-          <div class="menu-group">
-            <h3 class="menu-group__title">Croissants</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Croissant simples</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Croissant misto</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.200 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Croissant de queijo</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.300 Kz</span></div></li>
-            </ul>
-          </div>
-          <div class="menu-group">
-            <h3 class="menu-group__title">Tostas</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Tosta mista</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Tosta de queijo</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.200 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Tosta de fiambre</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Tosta de atum</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.300 Kz</span></div></li>
-            </ul>
-          </div>
-          <div class="menu-group">
-            <h3 class="menu-group__title">Pão de leite</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Pão de leite misto</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.200 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Pão de leite com queijo</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Pão de leite com fiambre</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.000 Kz</span></div></li>
-            </ul>
-          </div>
-          <div class="menu-group">
-            <h3 class="menu-group__title">Ovos e omeletes</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Omelete simples</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">3.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Omelete mista</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">4.500 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Omelete de queijo</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">3.500 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Ovo mexido</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">3.500 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Omelete no pão</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">3.500 Kz</span></div></li>
-            </ul>
-          </div>
-          <div class="menu-group">
-            <h3 class="menu-group__title">Prego</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Prego</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">5.500 Kz</span></div></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="menu-section" id="bebidas" aria-labelledby="t-bebidas">
-      <div class="wrap menu-section__grid">
-        <div class="menu-section__aside">
-          <h2 class="display-l" id="t-bebidas">Bebidas</h2>
-          <p class="muted">Cafés, leites e chás para o pequeno-almoço</p>
-          <img src="/okulya/assets/img/plate-4.webp" alt="" width="800" height="761" loading="lazy">
-        </div>
-        <div class="menu-groups">
-          <div class="menu-group">
-            <h3 class="menu-group__title">Cafés</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Café</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Café expresso</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Café pingado</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Café carioca</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">850 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Abatanado</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.500 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Descafeinado</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.500 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Galão</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.800 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Pingado</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.300 Kz</span></div></li>
-            </ul>
-          </div>
-          <div class="menu-group">
-            <h3 class="menu-group__title">Leites</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Leite simples</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">700 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Copo de leite</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.300 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Leite com chocolate</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Meia de leite</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">600 Kz</span></div></li>
-            </ul>
-          </div>
-          <div class="menu-group">
-            <h3 class="menu-group__title">Chás</h3>
-            <ul class="menu-list menu-list--prices">
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Chá</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">750 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Chá especial</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">2.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Chá de gengibre</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.000 Kz</span></div></li>
-              <li class="menu-item"><div class="menu-item__top"><span class="menu-item__name">Chá de limão</span><span class="menu-item__dots" aria-hidden="true"></span><span class="menu-item__price">1.000 Kz</span></div></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="prato-band" aria-labelledby="prato-band-title">
       <div class="wrap">
         <div class="prato-band__lead">
           <div class="sticker" data-pop>
-            <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ring-pb" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-pb" textLength="248">Take away • Segunda a sexta •</textPath></text></svg>
+            <span class="spin" aria-hidden="true"><svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-pb" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-pb" textLength="248">Take away • Segunda a sexta •</textPath></text></svg></span>
             <span class="sticker__core">5.000<small>Kwanzas</small></span>
           </div>
           <div>
@@ -365,14 +266,14 @@
       <div class="footer__legal">
         <span>© <span data-year>2026</span> Okulya Café, Talatona, Luanda</span>
         <a class="footer__credit" href="https://innoweb.agency" target="_blank" rel="noopener">Made by Innoweb Agency Solutions</a>
-        <span class="footer__links"><a href="/okulya/menu.html">Menu</a><a href="/okulya/sobre.html">Sobre</a><a href="/okulya/experiencias.html">Experiências</a></span>
+        <span class="footer__links"><a href="/okulya/menu.html">Menu</a><a href="/okulya/pequeno-almoco.html">Pequeno-almoço</a><a href="/okulya/sobre.html">Sobre</a><a href="/okulya/experiencias.html">Experiências</a></span>
       </div>
     </div>
     <p class="footer__word" aria-hidden="true">okulya</p>
   </footer>
 
   <a class="sticker wa" href="https://wa.me/244933002904?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20o%20Okulya%20Caf%C3%A9." target="_blank" rel="noopener" aria-label="Fala connosco no WhatsApp">
-    <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ring-wa" d="M50,50 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs><text><textPath href="#ring-wa" textLength="240">Fala connosco • WhatsApp •</textPath></text></svg>
+    <span class="spin" aria-hidden="true"><svg class="ring" viewBox="0 0 100 100"><defs><path id="ring-wa" d="M50,50 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs><text><textPath href="#ring-wa" textLength="240">Fala connosco • WhatsApp •</textPath></text></svg></span>
     <svg class="wa__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
   </a>
 

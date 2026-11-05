@@ -80,7 +80,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 /* split-line reveal: lines rise out of a mask */
 .line-mask { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
-.line-mask > span { display: block; will-change: transform; }
+.line-mask > span { display: block; }
 
 /* ---------- buttons & links ---------- */
 .btn {
@@ -111,8 +111,19 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .status::before {
   content: ""; width: .6em; height: .6em; border-radius: 50%; background: #9A8F86; flex: none;
 }
-.status.is-open::before { background: #3BA55C; box-shadow: 0 0 0 0 rgba(59, 165, 92, .5); animation: ping 2.2s infinite; }
-@keyframes ping { 70% { box-shadow: 0 0 0 .6em rgba(59, 165, 92, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 165, 92, 0); } }
+.status.is-open { position: relative; }
+.status.is-open::before { background: #3BA55C; }
+/* the pulse is a separate dot that grows and fades: transform and opacity only, so it
+   runs on the GPU (an animated box-shadow repainted on every frame, all the time) */
+.status.is-open::after {
+  content: ""; position: absolute; left: 0; top: 50%; width: .6em; height: .6em; margin-top: -.3em;
+  border-radius: 50%; background: #3BA55C; pointer-events: none;
+  animation: pulse 2.2s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: .55; }
+  70%, 100% { transform: scale(3); opacity: 0; }
+}
 
 /* ==========================================================================
    Page transition (circle wipe in amber, the logo in the middle)
@@ -177,7 +188,11 @@ html.is-leaving .pt { pointer-events: all; clip-path: circle(150% at var(--x, 50
 .brand { position: relative; display: block; width: 78px; height: 78px; flex: none; transition: width .35s var(--ease), height .35s var(--ease); }
 .is-scrolled .brand { width: 62px; height: 62px; }
 .brand img { position: absolute; inset: 15%; width: 70%; height: 70%; border-radius: 50%; }
-.brand svg { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 22s linear infinite; }
+/* Rotating rings: the turn is on the HTML wrapper (.spin), which the GPU rotates as a
+   flat image. Rotating the <svg> itself made Chrome lay its text out again every frame. */
+.spin { position: absolute; inset: 0; display: block; pointer-events: none; }
+.spin > svg { width: 100%; height: 100%; }
+.brand .spin { animation: spin 22s linear infinite; }
 .brand text { font: 600 9.6px var(--font-body); letter-spacing: .14em; fill: var(--cafe); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -223,7 +238,7 @@ html.is-leaving .pt { pointer-events: all; clip-path: circle(150% at var(--x, 50
 .mobile-menu ul { display: grid; gap: 4px; }
 .mobile-menu li { overflow: hidden; }
 .mobile-menu a.mm-link {
-  display: block; font-family: var(--font-display); font-size: clamp(3rem, 14vw, 5rem); line-height: 1.05;
+  display: block; font-family: var(--font-display); font-size: clamp(2.3rem, 10.5vw, 4.4rem); line-height: 1.08;
   text-decoration: none; transform: translateY(110%);
   transition: transform .6s var(--ease);
 }
@@ -231,12 +246,14 @@ html.is-leaving .pt { pointer-events: all; clip-path: circle(150% at var(--x, 50
 .menu-open .mobile-menu li:nth-child(2) a { transition-delay: .06s; }
 .menu-open .mobile-menu li:nth-child(3) a { transition-delay: .12s; }
 .menu-open .mobile-menu li:nth-child(4) a { transition-delay: .18s; }
+.menu-open .mobile-menu li:nth-child(5) a { transition-delay: .24s; }
 .mobile-menu__foot { margin-top: auto; display: grid; gap: 14px; font-size: 1rem; }
 .mobile-menu__blob {
   position: absolute; z-index: -1; right: -30vw; bottom: -10vh; width: 90vw; aspect-ratio: 1;
   background: var(--mel); border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
-  animation: blob 40s linear infinite;
 }
+/* only turns while the menu is open: a hidden animation still costs every frame */
+.menu-open .mobile-menu__blob { animation: blob 40s linear infinite; }
 
 @media (max-width: 960px) {
   :root { --header-h: 78px; }
@@ -267,7 +284,7 @@ html.is-leaving .pt { pointer-events: all; clip-path: circle(150% at var(--x, 50
   background: var(--bg, var(--mel)); color: var(--fg, var(--cafe));
   text-align: center; text-decoration: none;
 }
-.sticker svg.ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 16s linear infinite; }
+.sticker .spin { animation: spin 16s linear infinite; }
 .sticker svg.ring text { font: 600 10.5px var(--font-body); letter-spacing: .16em; fill: currentColor; }
 .sticker__core { position: relative; font-family: var(--font-display); line-height: .95; }
 
@@ -303,7 +320,8 @@ html.is-leaving .pt { pointer-events: all; clip-path: circle(150% at var(--x, 50
   border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
   animation: blob 36s linear infinite; will-change: transform;
 }
-.hero__plates { position: absolute; inset: 0; will-change: transform; }
+/* a slow turn in CSS, so the GPU runs it (it was a never-ending GSAP tween on the main thread) */
+.hero__plates { position: absolute; inset: 0; animation: spin 90s linear infinite; }
 .hero__plate {
   position: absolute; inset: 9%; width: 82%; height: 82%; object-fit: contain;
   filter: drop-shadow(0 30px 40px rgba(42, 24, 16, .28));
@@ -793,13 +811,15 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
    MENU page
    ========================================================================== */
 .menu-nav {
-  position: sticky; top: 74px; z-index: 40;
+  --nav-top: 74px;
+  position: sticky; top: var(--nav-top); z-index: 40;
   padding: 14px var(--gutter);
   background: rgba(255, 254, 251, .97);
-  transition: top .55s var(--ease);
+  transition: transform .55s var(--ease);
 }
-.header-hidden .menu-nav { top: 0; }
-@media (max-width: 960px) { .menu-nav { top: 68px; } }
+/* follows the top bar up with a transform: animating `top` re-laid the page out every frame */
+.header-hidden .menu-nav { transform: translateY(calc(-1 * var(--nav-top))); }
+@media (max-width: 960px) { .menu-nav { --nav-top: 68px; } }
 .menu-nav ul { display: flex; gap: 8px; justify-content: center; overflow-x: auto; scrollbar-width: none; }
 .menu-nav ul::-webkit-scrollbar { display: none; }
 .menu-nav a {
@@ -839,15 +859,18 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
 /* ---------- dates on the monthly menu (all added by main.js) ---------- */
 /* "Esta semana" / "Hoje": a dark pill with a pulsing amber dot */
 .now-tag {
-  display: inline-flex; align-items: center; gap: .5em; justify-self: start;
+  position: relative; display: inline-flex; align-items: center; gap: .5em; justify-self: start;
   padding: .45em .9em; border-radius: 999px; background: var(--cafe); color: var(--cal);
   font: 600 .78rem/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
 }
 .now-tag::before {
   content: ""; width: .6em; height: .6em; border-radius: 50%; background: var(--ambar); flex: none;
-  animation: ping-ambar 2.2s infinite;
 }
-@keyframes ping-ambar { 0% { box-shadow: 0 0 0 0 rgba(238, 155, 34, .6); } 70%, 100% { box-shadow: 0 0 0 .6em rgba(238, 155, 34, 0); } }
+.now-tag::after {
+  content: ""; position: absolute; left: .9em; top: 50%; width: .6em; height: .6em; margin-top: -.3em;
+  border-radius: 50%; background: var(--ambar); pointer-events: none;
+  animation: pulse 2.2s infinite;
+}
 
 .menu-nav small { font-size: .8em; font-weight: 400; opacity: .6; margin-left: .2em; }
 .menu-nav a.is-now { position: relative; }
@@ -935,7 +958,15 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
 }
 .cal__day:hover { transform: scale(1.12); background: var(--mel); }
 .cal__day.is-past { color: rgba(42, 24, 16, .3); text-decoration: line-through; text-decoration-thickness: 1.5px; }
-.cal__day.is-today { background: var(--ambar); color: var(--cafe); animation: ping-ambar 2.2s infinite; }
+.cal__day.is-today { position: relative; isolation: isolate; background: var(--ambar); color: var(--cafe); }
+.cal__day.is-today::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 50%; background: var(--ambar);
+  pointer-events: none; animation: pulse-day 2.2s infinite;
+}
+@keyframes pulse-day {
+  0% { transform: scale(1); opacity: .6; }
+  70%, 100% { transform: scale(1.5); opacity: 0; }
+}
 .cal__key { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: .85rem; color: var(--cafe-soft); }
 .cal__key li { display: inline-flex; align-items: center; gap: .5em; }
 .cal__dot { width: .8em; height: .8em; border-radius: 50%; }
@@ -971,12 +1002,64 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
 .menu-section__aside img.menu-section__photo { width: min(100%, 280px); aspect-ratio: 1; object-fit: cover; border-radius: 50%; filter: none; }
 .menu-item__price small { font-weight: 400; }
 
-/* breakfast and drinks: grouped price lists */
-.menu-groups { display: grid; gap: clamp(36px, 5vw, 56px); }
-.menu-group__title { font-family: var(--font-display); font-size: clamp(1.35rem, 2vw, 1.7rem); line-height: 1.1; margin-bottom: 14px; }
-.menu-list--prices .menu-item { padding-block: 12px; }
-.menu-list--prices .menu-item:first-child { padding-top: 0; }
-.menu-list--prices .menu-item__name { font: 500 1.06rem/1.35 var(--font-body); }
+/* ==========================================================================
+   Lunch / breakfast switch (menu page and breakfast page heroes)
+   ========================================================================== */
+.menu-switch {
+  position: relative; z-index: 2; display: inline-grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  margin-top: clamp(24px, 3vw, 36px); padding: 6px; border-radius: 999px;
+  background: var(--cal); box-shadow: inset 0 0 0 1.5px var(--line), 0 14px 30px -18px rgba(42, 24, 16, .35);
+}
+.menu-switch a {
+  display: grid; justify-items: center; gap: 2px; padding: .75em 1.6em; border-radius: 999px;
+  text-decoration: none; text-align: center; transition: background-color .25s, color .25s;
+}
+.menu-switch b { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.1rem, 1.6vw, 1.35rem); line-height: 1.1; }
+.menu-switch small { font-size: .78rem; opacity: .7; white-space: nowrap; }
+.menu-switch a:hover { background: rgba(255, 212, 138, .55); }
+.menu-switch a[aria-current="page"] { background: var(--cafe); color: var(--cal); }
+@media (max-width: 480px) {
+  .menu-switch { display: grid; width: 100%; }
+  .menu-switch a { padding: .7em .6em; }
+}
+
+/* ==========================================================================
+   Breakfast page: every category as a card, prices aligned on the right
+   ========================================================================== */
+/* room under the big title for the cedilla of "almoço" */
+.page-hero--bf .line-mask { padding-bottom: .24em; margin-bottom: -.1em; }
+.bf-section { padding-block: clamp(56px, 8vw, 110px); }
+.bf-section--drinks { background: #FFF7E8; }
+.bf-section__title { margin-bottom: clamp(24px, 4vw, 44px); }
+.bf-grid { columns: 3 300px; column-gap: clamp(16px, 2.4vw, 28px); }
+.bf-card {
+  break-inside: avoid; margin-bottom: clamp(16px, 2.4vw, 28px);
+  padding: clamp(22px, 2.6vw, 32px); border-radius: 28px;
+  background: var(--cal); box-shadow: inset 0 0 0 1.5px var(--line);
+  scroll-margin-top: 150px;
+}
+.bf-section--drinks .bf-card { background: #FFFEFB; }
+.bf-card__title { font-family: var(--font-display); font-size: clamp(1.45rem, 2.2vw, 1.85rem); line-height: 1.1; margin-bottom: 14px; }
+.price-list li { display: flex; align-items: baseline; gap: 10px; padding-block: 11px; border-top: 1px dashed var(--line); font-size: 1.06rem; line-height: 1.35; }
+.price-list li:first-child { border-top: 0; padding-top: 4px; }
+.price-list__dots { flex: 1; min-width: 16px; border-bottom: 2px dotted rgba(42, 24, 16, .25); translate: 0 -.3em; }
+.price-list__price { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.bf-card.is-flash { animation: day-flash 1.8s var(--ease); }
+
+/* homepage: breakfast band with a chip for every category */
+.bf-band { padding-block: clamp(64px, 9vw, 120px); background: #FFF7E8; }
+.bf-band__grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(32px, 6vw, 90px); align-items: center; }
+.bf-band__lead { display: grid; gap: 18px; justify-items: start; }
+.bf-band__chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.bf-band__chips a {
+  display: block; padding: .8em 1.3em; border-radius: 999px; text-decoration: none; font-weight: 600;
+  background: var(--mel); transition: transform .3s var(--ease-back), background-color .25s;
+}
+.bf-band__chips a.is-drink { background: var(--cal); box-shadow: inset 0 0 0 1.5px var(--line); }
+.bf-band__chips a:hover { transform: translateY(-3px) rotate(-2deg); background: var(--ambar); }
+@media (max-width: 860px) {
+  .bf-band__grid { grid-template-columns: 1fr; }
+}
 
 @media (max-width: 860px) {
   .menu-section__grid { grid-template-columns: 1fr; }
@@ -1080,6 +1163,10 @@ main { position: relative; z-index: 1; background: var(--cal); overflow-x: clip;
 /* ==========================================================================
    Reduced motion: keep everything readable and still
    ========================================================================== */
+/* looping decorations stop while they are off screen (main.js sets .is-offscreen) */
+.is-offscreen, .is-offscreen::before, .is-offscreen::after,
+.is-offscreen .spin, .is-offscreen img, .is-offscreen i::after { animation-play-state: paused !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   html.is-entering .pt { animation: none; clip-path: circle(0% at 50% 50%); }

@@ -16,7 +16,7 @@
   // from page links so each click goes straight to the clean address.
   if (!location.pathname.startsWith('/okulya')) {
     $$('a[href^="/okulya"]').forEach((a) => {
-      const m = a.getAttribute('href').match(/^\/okulya(?:\/(?:index\.html)?|\/([a-z]+\.html))?(#.*)?$/);
+      const m = a.getAttribute('href').match(/^\/okulya(?:\/(?:index\.html)?|\/([a-z-]+\.html))?(#.*)?$/);
       if (m) a.setAttribute('href', `/${m[1] || ''}${m[2] || ''}`);
     });
   }
@@ -202,7 +202,20 @@
     closeMenu();
     scrollToEl(target, parseFloat(getComputedStyle(target).scrollMarginTop) || 0);
     history.replaceState(null, '', `#${id}`);
+    flash(target);
   });
+
+  // a breakfast category picked from a link lights up when the page arrives at it
+  function flash(el) {
+    if (!el || !el.classList.contains('bf-card')) return;
+    el.classList.remove('is-flash');
+    void el.offsetWidth;
+    el.classList.add('is-flash');
+  }
+  if (location.hash) {
+    const arrived = document.getElementById(location.hash.slice(1));
+    if (arrived) window.addEventListener('load', () => setTimeout(() => flash(arrived), 400));
+  }
 
   /* ---------- header: solid after scrolling, hides going down ---------- */
   // Desktop footer reveal (sticky under the page) only when the whole footer fits on screen.
@@ -236,21 +249,41 @@
     }).observe(end);
   }
 
+  // The bar only changes after a clear move in one direction (40px), so momentum
+  // scrolling, small corrections and the bounce at either end of the page don't
+  // flick it in and out. Classes are written only when they actually change.
   const header = $('.site-header');
-  let lastY = window.scrollY;
+  let lastY = window.scrollY; let travel = 0; let hidden = false; let scrolled = null;
+  const setHidden = (h) => {
+    if (h === hidden) return;
+    hidden = h;
+    header.classList.toggle('is-hidden', h);
+    html.classList.toggle('header-hidden', h);
+  };
   const onScroll = () => {
-    const y = window.scrollY;
     if (!header) return;
-    header.classList.toggle('is-scrolled', y > 10);
-    const hide = y > lastY && y > 240 && !html.classList.contains('menu-open');
-    if (Math.abs(y - lastY) > 4) {
-      header.classList.toggle('is-hidden', hide);
-      html.classList.toggle('header-hidden', hide);
-    }
+    const y = Math.max(0, window.scrollY);
+    const s = y > 10;
+    if (s !== scrolled) { scrolled = s; header.classList.toggle('is-scrolled', s); }
+    const dy = y - lastY;
     lastY = y;
+    if (y < 240 || html.classList.contains('menu-open')) { travel = 0; setHidden(false); return; }
+    if (!dy) return;
+    travel = (dy > 0) === (travel > 0) ? travel + dy : dy;
+    if (travel > 40) setHidden(true);
+    else if (travel < -40) setHidden(false);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  // looping CSS decorations (rotating rings, pulsing dots, turning plates) pause off screen
+  if ('IntersectionObserver' in window) {
+    const loops = $$('.sticker, .brand, .status.is-open, .now-tag, .cal__day.is-today, .hero__blob, .hero__plates, .prato__visual, .hero__cue');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => en.target.classList.toggle('is-offscreen', !en.isIntersecting));
+    }, { rootMargin: '100px' });
+    loops.forEach((el) => io.observe(el));
+  }
 
   /* ---------- mobile menu ---------- */
   const toggle = $('.menu-toggle');
@@ -306,10 +339,19 @@
     html.classList.add('has-cursor');
     const ring = $('.cursor__ring', c); const dot = $('.cursor__dot', c); const label = $('span', ring);
     let mx = -100; let my = -100; let rx = -100; let ry = -100;
+    let raf = 0;
+    // the ring eases after the dot, and the loop stops once it has caught up,
+    // so a still mouse costs nothing while the page scrolls
+    const loop = () => {
+      rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+      if (Math.abs(mx - rx) < 0.1 && Math.abs(my - ry) < 0.1) { rx = mx; ry = my; raf = 0; } else raf = requestAnimationFrame(loop);
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    };
     window.addEventListener('mousemove', (e) => {
       mx = e.clientX; my = e.clientY;
       dot.style.transform = `translate(${mx}px, ${my}px)`;
       c.classList.remove('is-hidden');
+      if (!raf) raf = requestAnimationFrame(loop);
     }, { passive: true });
     document.addEventListener('mouseleave', () => c.classList.add('is-hidden'));
     document.addEventListener('mouseover', (e) => {
@@ -319,12 +361,6 @@
       c.classList.toggle('is-link', !!el && !text);
       if (text) label.textContent = text;
     });
-    const loop = () => {
-      rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
-      ring.style.transform = `translate(${rx}px, ${ry}px)`;
-      requestAnimationFrame(loop);
-    };
-    loop();
   }
 
   /* ---------- hero plate carousel (Soquendo's staggered slide swap) ---------- */
@@ -413,7 +449,7 @@
     mm.add({ zoom: ZOOM, still: STILL }, (ctx) => {
       if (!ctx.conditions.zoom) {
         // short screens: a normal hero whose blob drifts up as you leave
-        gsap.to(heroStage, { yPercent: -12, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+        gsap.to(heroStage, { yPercent: -12, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.4 } });
         return undefined;
       }
       hero.classList.add('is-zoom');
@@ -484,7 +520,6 @@
     } else {
       tl.from(oImg, { scale: 0, rotation: -90, duration: 1.3, ease: 'back.out(1.4)' }, 0.1);
     }
-    gsap.to('.hero__plates', { rotation: 360, duration: 90, repeat: -1, ease: 'none' });
     // the "o" is measured from the web font's metrics, so re-measure once it loads
     if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
   }
@@ -628,12 +663,16 @@
     row.appendChild(track.cloneNode(true)).setAttribute('aria-hidden', 'true');
     const tracks = $$('.marquee__track', row);
     const tween = gsap.fromTo(tracks, { xPercent: dir > 0 ? 0 : -100 }, { xPercent: dir > 0 ? -100 : 0, duration: 38, ease: 'none', repeat: -1 });
+    // one reusable tween eases the speed (no new tweens on every scroll event)
+    const speed = { v: 1 };
+    const easeTo = gsap.quickTo(speed, 'v', { duration: 0.6, ease: 'power3', onUpdate: () => tween.timeScale(speed.v) });
+    let settle = 0;
     ScrollTrigger.create({
       trigger: row, start: 'top bottom', end: 'bottom top',
       onUpdate: (self) => {
-        const boost = 1 + Math.min(Math.abs(self.getVelocity()) / 260, 5);
-        gsap.to(tween, { timeScale: boost * self.direction, duration: 0.2, overwrite: true });
-        gsap.to(tween, { timeScale: self.direction, duration: 1, delay: 0.25, overwrite: false });
+        easeTo(self.direction * (1 + Math.min(Math.abs(self.getVelocity()) / 260, 5)));
+        clearTimeout(settle);
+        settle = setTimeout(() => easeTo(self.direction), 250);
       },
       onToggle: (self) => (self.isActive ? tween.play() : tween.pause()),
     });
@@ -641,7 +680,7 @@
 
   /* ---------- category badges slowly turn as you scroll ---------- */
   $$('.cat__badge').forEach((b, i) => {
-    gsap.fromTo(b, { rotation: i % 2 ? 14 : -14 }, { rotation: i % 2 ? -14 : 14, ease: 'none', scrollTrigger: { trigger: b, start: 'top bottom', end: 'bottom top', scrub: true } });
+    gsap.fromTo(b, { rotation: i % 2 ? 14 : -14 }, { rotation: i % 2 ? -14 : 14, ease: 'none', scrollTrigger: { trigger: b, start: 'top bottom', end: 'bottom top', scrub: 0.4 } });
   });
 
   /* ---------- experience cards drop in, tilted ---------- */
@@ -659,7 +698,7 @@
     el.innerHTML = words.map((w) => `<span class="w">${w}</span>`).join(' ');
     gsap.to($$('.w', el), {
       color: '#2A1810', stagger: 0.12, ease: 'none',
-      scrollTrigger: { trigger: el, start: 'top 82%', end: 'bottom 50%', scrub: true },
+      scrollTrigger: { trigger: el, start: 'top 82%', end: 'bottom 50%', scrub: 0.4 },
     });
   });
 
@@ -673,7 +712,7 @@
   // floating plates in page heroes drift on scroll
   $$('.page-hero__plate').forEach((p, i) => {
     gsap.from(p, { scale: 0.3, rotation: -90, autoAlpha: 0, duration: 1.4, delay: 0.6 + i * 0.18, ease: 'back.out(1.4)' });
-    gsap.to(p, { yPercent: -60 - i * 25, rotation: i % 2 ? -50 : 50, ease: 'none', scrollTrigger: { trigger: p.closest('section'), start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.to(p, { yPercent: -60 - i * 25, rotation: i % 2 ? -50 : 50, ease: 'none', scrollTrigger: { trigger: p.closest('section'), start: 'top top', end: 'bottom top', scrub: 0.4 } });
   });
   const pageHero = $('.page-hero');
   if (pageHero) {
@@ -691,15 +730,22 @@
 
   // menu: staggered items per category (Soquendo's 180ms cadence)
   $$('.menu-section').forEach((sec) => {
-    // price lists rise group by group, the week days row by row
-    const groups = $$('.menu-group', sec);
-    gsap.from(groups.length ? groups : $$('.menu-item', sec), {
+    gsap.from($$('.menu-item', sec), {
       y: 34, autoAlpha: 0, duration: 0.9, ease: 'expo.out', stagger: 0.12,
       scrollTrigger: { trigger: sec, start: 'top 70%' },
     });
     const img = $('.menu-section__aside img', sec);
-    if (img) gsap.fromTo(img, { rotation: -40 }, { rotation: 30, ease: 'none', scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: true } });
+    if (img) gsap.fromTo(img, { rotation: -40 }, { rotation: 30, ease: 'none', scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: 0.4 } });
   });
+
+  // breakfast page: cards rise in as they come on screen, a few at a time
+  if ($('.bf-card')) {
+    gsap.set('.bf-card', { y: 30, autoAlpha: 0 });
+    ScrollTrigger.batch('.bf-card', {
+      start: 'top 92%', once: true,
+      onEnter: (els) => gsap.to(els, { y: 0, autoAlpha: 1, duration: 0.8, ease: 'expo.out', stagger: 0.08, clearProps: 'transform' }),
+    });
+  }
 
   // menu page: today's dishes slide in, the calendar days pop one after another
   const todayBox = $('.today:not([hidden])');
@@ -725,20 +771,56 @@
   });
 })();
 
-/* ---------- menu page: scroll-spy for the category bar (works without GSAP) ---------- */
+/* ---------- menu pages: scroll-spy for the category bar (works without GSAP) ---------- */
+// A band across the middle of the screen decides which links are lit: every section
+// (or, on the breakfast page, every card in the row) crossing it. Between two cards the
+// last ones stay lit; back up in the page header nothing is. A clicked link stays lit
+// while the page scrolls to it.
 (() => {
   const links = [...document.querySelectorAll('.menu-nav a')];
   if (!links.length || !('IntersectionObserver' in window)) return;
-  const bar = document.querySelector('.menu-nav ul');
+  const nav = document.querySelector('.menu-nav');
+  const bar = $('ul', nav);
+  function $(s, el) { return el.querySelector(s); }
   const byId = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((en) => {
-      if (!en.isIntersecting) return;
-      const a = byId.get(en.target.id);
-      if (!a) return;
-      links.forEach((l) => { l.classList.toggle('is-active', l === a); if (l === a) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current'); });
-      bar.scrollTo({ left: a.offsetLeft - bar.clientWidth / 2 + a.clientWidth / 2, behavior: 'smooth' });
+  const targets = [...byId.keys()].map((id) => document.getElementById(id)).filter(Boolean);
+  const inBand = new Set();
+  let lit = '';
+  let holdUntil = 0;
+  let headIn = false;
+  const show = (on) => {
+    const key = on.map((a) => a.hash).join();
+    if (key === lit) return;
+    lit = key;
+    links.forEach((l) => {
+      const yes = on.includes(l);
+      l.classList.toggle('is-active', yes);
+      if (yes && l === on[0]) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current');
     });
-  }, { rootMargin: '-45% 0px -50% 0px' });
-  byId.forEach((_, id) => { const s = document.getElementById(id); if (s) io.observe(s); });
+    const a = on[0];
+    if (a) bar.scrollTo({ left: a.offsetLeft - bar.clientWidth / 2 + a.clientWidth / 2, behavior: 'smooth' });
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => { if (en.isIntersecting) inBand.add(en.target); else inBand.delete(en.target); });
+    if (Date.now() < holdUntil) return;
+    const on = targets.filter((t) => inBand.has(t)).map((t) => byId.get(t.id));
+    if (on.length) show(on);
+    else if (headIn) show([]);
+  }, { rootMargin: '-40% 0px -45% 0px' });
+  targets.forEach((t) => io.observe(t));
+
+  // whatever comes before the bar (the page title) clears it once it is back in the
+  // top part of the screen and no section is in the band
+  const head = nav.previousElementSibling;
+  if (head) {
+    new IntersectionObserver(([en]) => {
+      headIn = en.isIntersecting;
+      if (headIn && !inBand.size && Date.now() >= holdUntil) show([]);
+    }, { rootMargin: '0px 0px -55% 0px' }).observe(head);
+  }
+
+  links.forEach((a) => a.addEventListener('click', () => {
+    holdUntil = Date.now() + 1200;
+    show([a]);
+  }));
 })();
